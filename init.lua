@@ -10,6 +10,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 vim.opt.rtp:prepend(lazypath)
+vim.wo.relativenumber = true
 
 local lazy_config = require "configs.lazy"
 
@@ -27,6 +28,17 @@ require("lazy").setup({
 
   { import = "plugins" },
 }, lazy_config)
+
+local lspconfig = require("lspconfig")
+lspconfig.gopls.setup({})
+
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+end
+require('lspconfig').gopls.setup({
+   on_attach = on_attach
+})
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
